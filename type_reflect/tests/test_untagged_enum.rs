@@ -1,0 +1,144 @@
+mod common;
+
+use anyhow::Result;
+use common::*;
+
+use serde::{Deserialize, Serialize};
+use type_reflect::*;
+
+#[derive(Serialize, Deserialize)]
+pub struct Rectangle {
+    width: f32,
+    height: f32,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum Shape {
+    Circle { radius: f32 },
+    Square { side: f32 },
+    Rectangle(Rectangle),
+    Scale(f32),
+    ScaledRectangle(Rectangle, f32),
+    Null,
+}
+
+pub const SCOPE: &'static str = "test_untagged_enum";
+
+#[test]
+fn test_validation() -> Result<()> {
+    let output = init_path(SCOPE, "test_validation");
+
+    let value = Shape::Circle { radius: 5.0 };
+    let json = serde_json::to_string_pretty(&value)?;
+    println!("{json}");
+
+    let value = Shape::Rectangle(Rectangle {
+        width: 5.0,
+        height: 5.0,
+    });
+    let json = serde_json::to_string_pretty(&value)?;
+    println!("{json}");
+
+    let value = Shape::ScaledRectangle(
+        Rectangle {
+            width: 5.0,
+            height: 5.0,
+        },
+        2.0,
+    );
+    let json = serde_json::to_string_pretty(&value)?;
+    println!("{json}");
+
+    let value = Shape::Scale(2.0);
+    let json = serde_json::to_string_pretty(&value)?;
+    println!("{json}");
+
+    let value = Shape::Null;
+    let json = serde_json::to_string_pretty(&value)?;
+    println!("{json}");
+
+    // export_types!(
+    //     types: [ Shape, Rectangle ],
+    //     destinations: [(
+    //         output.ts_path(),
+    //         emitters: [
+    //             TypeScript(),
+    //             TSValidation(),
+    //             TSFormat(
+    //                 tab_size: 2,
+    //                 line_width: 80,
+    //             ),
+    //         ],
+    //     )]
+    // )?;
+
+    // output.write_jest(
+    //     "Shape, Rectangle, ShapeCase",
+    //     ts_string! {
+    //         describe("ADT Validation", ()=>{
+    //             it("Validates a Null variant: {_case: ShapeCase.Null}", ()=>{
+    //                 expect(() => {
+    //                     Shape.validate({
+    //                         _case: ShapeCase.Null
+    //                     })
+    //                 }).not.toThrow();
+    //             });
+    //             it("Validates a Circle variant: {_case: ShapeCase.Circle, data: { radius: 1.7} }", ()=>{
+    //                 expect(() => {
+    //                     Shape.validate({
+    //                         _case: ShapeCase.Circle,
+    //                         data: {
+    //                             radius: 1.7
+    //                         }
+    //                     })
+    //                 }).not.toThrow();
+    //             });
+    //             it("Validates a Rectangle variant: {_case: ShapeCase.Rectangle, data: { width: 1, height: 2} }", ()=>{
+    //                 expect(() => {
+    //                     Shape.validate({
+    //                         _case: ShapeCase.Rectangle,
+    //                         data: {
+    //                             width: 1,
+    //                             height: 2
+    //                         }
+    //                     })
+    //                 }).not.toThrow();
+    //             });
+    //             it("Validates a ScaledRectangle variant: {_case: ShapeCase.ScaledRectangle, data: [{ width: 1, height: 2}, 0.5] }", ()=>{
+    //                 expect(() => {
+    //                     Shape.validate({
+    //                         _case: ShapeCase.ScaledRectangle,
+    //                         data: [
+    //                             {
+    //                                 width: 1,
+    //                                 height: 2
+    //                             },
+    //                             0.5
+    //                         ]
+    //                     })
+    //                 }).not.toThrow();
+    //             });
+    //             it("Doesn't Validate an incorrect ScaledRectangle variant: {_case: ShapeCase.Circle, data: [{ width: 1, height: 2}, 0.5] }", ()=>{
+    //                 expect(() => {
+    //                     Shape.validate({
+    //                         _case: ShapeCase.Circle,
+    //                         data: [
+    //                             {
+    //                                 width: 1,
+    //                                 height: 2
+    //                             },
+    //                             0.5
+    //                         ]
+    //                     })
+    //                 }).toThrow();
+    //             });
+
+    //         });
+    //     }
+    //     .as_str(),
+    // )?;
+
+    // output.run_ts()
+    //
+    Ok(())
+}

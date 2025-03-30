@@ -72,23 +72,16 @@ impl EnumDef {
             // false indicates it is not complex
             false => EnumType::Simple,
             // true indicates the type is complex
-            true => {
-                let case_key = match attributes.tag {
-                    Some(key) => key,
-                    None => {
-                        return Err(syn::Error::new(
-                            item.ident.span().clone(),
-                            r#"The Serde "tag" attribute is required for Enum declarations using the Reflect derive macro.  I.e. #[serde(tag="case")]"#,
-                        ))
+            true => match attributes.tag {
+                Some(case_key) => {
+                    let content_key = attributes.content;
+                    EnumType::Complex {
+                        case_key,
+                        content_key,
                     }
-                };
-
-                let content_key = attributes.content;
-                EnumType::Complex {
-                    case_key,
-                    content_key,
                 }
-            }
+                None => EnumType::Untagged,
+            },
         };
 
         Ok(Self {
@@ -143,6 +136,7 @@ impl EnumDef {
                     EnumType::Complex { case_key: #case_key.to_string(), content_key: None }
                 },
             },
+            EnumType::Untagged => quote! { EnumType::Untagged },
         };
 
         let inflection = &self.inflection.to_tokens();

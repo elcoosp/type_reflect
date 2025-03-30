@@ -14,6 +14,7 @@ where
             case_key,
             content_key,
         } => emit_complex_enum_type::<T>(&case_key, &content_key),
+        EnumType::Untagged => unimplemented!("untagged enums not supported by the Zod generator"),
     }
 }
 

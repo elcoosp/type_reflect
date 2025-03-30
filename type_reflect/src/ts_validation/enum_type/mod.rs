@@ -17,6 +17,7 @@ where
             case_key,
             content_key,
         } => emit_complex_enum_type::<T>(&case_key, &content_key),
+        EnumType::Untagged => todo!(),
     }
 }
 

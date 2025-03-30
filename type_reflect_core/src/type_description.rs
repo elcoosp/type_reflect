@@ -74,6 +74,7 @@ pub enum EnumType {
         case_key: String,
         content_key: Option<String>,
     },
+    Untagged,
 }
 
 // #[derive(Clone, Debug)]

@@ -12,6 +12,7 @@ use struct_type::*;
 
 pub mod enum_type;
 pub use enum_type::*;
+pub mod untagged_enum_type;
 
 pub mod type_fields;
 pub use type_fields::*;
