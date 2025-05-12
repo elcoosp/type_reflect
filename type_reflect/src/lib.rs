@@ -1,5 +1,6 @@
 #![allow(incomplete_features)]
 #![feature(specialization)]
+#![feature(let_chains)]
 extern crate type_reflect_macros;
 pub use core::convert::AsRef;
 use std::ffi::OsStr;

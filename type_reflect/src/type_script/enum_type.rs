@@ -200,7 +200,7 @@ export type {name} = {cases};
     }
 }
 
-fn union_case_type_name(case: &EnumCase, parent_name: &str) -> String {
+pub fn union_case_type_name(case: &EnumCase, parent_name: &str) -> String {
     format!("{}Case{}", parent_name, case.name)
 }
 
