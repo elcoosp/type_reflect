@@ -1,7 +1,11 @@
 use std::{ffi::OsStr, path::Path};
 
-use dprint_plugin_typescript::configuration::{
-    ConfigurationBuilder, NextControlFlowPosition, QuoteStyle,
+use dprint_plugin_typescript::{
+    configuration::{
+        ConfigurationBuilder, NextControlFlowPosition, PreferHanging, QuoteStyle,
+        SameOrNextLinePosition,
+    },
+    FormatTextOptions,
 };
 
 use crate::{AliasType, EnumReflectionType, StructType, TypeEmitter};
@@ -54,25 +58,32 @@ impl TypeEmitter for TSFormat {
         let config = ConfigurationBuilder::new()
             .indent_width(self.tab_size)
             .line_width(self.line_width)
-            .prefer_hanging(true)
-            .prefer_single_line(false)
-            .quote_style(QuoteStyle::PreferSingle)
-            .next_control_flow_position(NextControlFlowPosition::SameLine)
             .build();
 
         let file_path = Path::new(&path);
 
         let text: String = std::fs::read_to_string(Path::new(&path))?;
 
-        let result =
-            dprint_plugin_typescript::format_text(Path::new(&path), text.as_str(), &config);
+        let options: FormatTextOptions = FormatTextOptions {
+            path: Path::new(&path),
+            extension: None,
+            text,
+            config: &config,
+            external_formatter: None,
+        };
+
+        let result = dprint_plugin_typescript::format_text(options);
 
         match result {
             Ok(Some(contents)) => {
                 std::fs::write(file_path, contents)?;
             }
-            Err(_) => {}
-            _ => {}
+            Err(err) => {
+                eprintln!("Error formatting typescript: {}", err);
+            }
+            _ => {
+                eprintln!("Failed to format text: no output generated");
+            }
         };
 
         Ok(())

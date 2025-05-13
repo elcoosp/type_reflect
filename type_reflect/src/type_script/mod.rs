@@ -5,8 +5,12 @@ pub use super::type_description::Type;
 use super::*;
 
 pub mod struct_type;
-use dprint_plugin_typescript::configuration::{
-    ConfigurationBuilder, NextControlFlowPosition, QuoteStyle,
+use dprint_plugin_typescript::{
+    configuration::{
+        ConfigurationBuilder, NextControlFlowPosition, PreferHanging, QuoteStyle,
+        SameOrNextLinePosition,
+    },
+    FormatTextOptions,
 };
 use struct_type::*;
 
@@ -91,18 +95,21 @@ impl TypeEmitter for TypeScript {
         let config = ConfigurationBuilder::new()
             .indent_width(self.tab_size as u8)
             .line_width(80)
-            .prefer_hanging(true)
-            .prefer_single_line(false)
-            .quote_style(QuoteStyle::PreferSingle)
-            .next_control_flow_position(NextControlFlowPosition::SameLine)
             .build();
 
         let file_path = Path::new(&path);
 
         let text: String = std::fs::read_to_string(Path::new(&path))?;
 
-        let result =
-            dprint_plugin_typescript::format_text(Path::new(&path), text.as_str(), &config);
+        let options: FormatTextOptions = FormatTextOptions {
+            path: Path::new(&path),
+            extension: None,
+            text,
+            config: &config,
+            external_formatter: None,
+        };
+
+        let result = dprint_plugin_typescript::format_text(options);
 
         match result {
             Ok(Some(contents)) => {

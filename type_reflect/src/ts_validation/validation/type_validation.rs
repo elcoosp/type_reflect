@@ -29,7 +29,7 @@ pub fn type_validation(var_name: &str, type_: &Type) -> String {
             let value_type = to_ts_type(type_);
             format!(
                 r#"
-                {value_type}.validate({var_name});
+                {value_type}.validate({var_name})
                 "#,
                 var_name = var_name,
                 value_type = value_type

@@ -1,4 +1,5 @@
 use type_reflect_core::EnumType;
+use untagged::emit_untagged_enum_type;
 
 use crate::{ts_validation::validation_namespace, EnumReflectionType};
 
@@ -6,6 +7,8 @@ mod complex;
 use complex::*;
 
 mod case_type;
+
+mod untagged;
 
 pub fn emit_enum_type<T>() -> String
 where
@@ -17,7 +20,7 @@ where
             case_key,
             content_key,
         } => emit_complex_enum_type::<T>(&case_key, &content_key),
-        EnumType::Untagged => todo!(),
+        EnumType::Untagged => emit_untagged_enum_type::<T>(),
     }
 }
 

@@ -1,4 +1,4 @@
-use crate::Inflection;
+use crate::{Inflectable, Inflection};
 
 #[derive(Clone, Debug)]
 pub struct NamedType {
@@ -44,6 +44,12 @@ pub struct EnumCase {
     pub name: String,
     pub type_: TypeFieldsDefinition,
     pub inflection: Inflection,
+}
+
+impl EnumCase {
+    pub fn name_with_inflection(&self) -> String {
+        self.name.inflect(self.inflection)
+    }
 }
 
 /**
