@@ -1,5 +1,5 @@
 use ts_quote::ts_string;
-use type_reflect_core::{EnumCase, EnumType, Inflection};
+use type_reflect_core::{EnumCase, EnumType, Inflectable, Inflection};
 
 use super::untagged_enum_type::emit_untaggedd_enum_type;
 use crate::type_script::type_fields;
@@ -25,11 +25,13 @@ fn emit_simple_enum_type<T>() -> String
 where
     T: EnumReflectionType,
 {
+    let inflection = T::inflection();
     let simple_cases: String = T::cases()
         .into_iter()
         .map(|case| {
+            let inflected = case.name.inflect(inflection);
             format!(
-                r#"  {name} = "{name}",
+                r#"  {name} = "{inflected}",
 "#,
                 name = case.name
             )
@@ -79,8 +81,11 @@ trait EnumTypeBridge: EnumReflectionType {
 
     fn generate_cases_union() -> String {
         let mut case_values = vec![];
+        let inflection = Self::inflection();
+
         for case in Self::cases() {
-            case_values.push(format!(r#""{name}""#, name = case.name));
+            let inflected = case.name.inflect(inflection);
+            case_values.push(format!(r#""{inflected}""#));
         }
 
         let case_values = case_values.join("\n  | ");
@@ -95,10 +100,12 @@ trait EnumTypeBridge: EnumReflectionType {
 
     fn generate_case_key_const() -> String {
         let mut case_values = String::new();
+        let inflection = Self::inflection();
 
         case_values.push_str("\n  ");
         for case in Self::cases() {
-            case_values.push_str(&format!(r#"{name}: "{name}""#, name = case.name));
+            let inflected = case.name.inflect(inflection);
+            case_values.push_str(&format!(r#"{name}: "{inflected}""#, name = case.name,));
             case_values.push_str(",\n  ");
         }
 
@@ -132,11 +139,11 @@ trait EnumTypeBridge: EnumReflectionType {
         case: &EnumCase,
         case_key: &String,
         content_key: &Option<String>,
-        _inflection: Inflection,
+        inflection: Inflection,
     ) -> String {
         let case_type_name = union_case_type_name(case, Self::name());
         // let id = Self::case_id(case);
-        let id = &case.name;
+        let id = &case.name.inflect(inflection);
 
         let additional_fields = match &case.type_ {
             type_reflect_core::TypeFieldsDefinition::Unit => {
