@@ -49,12 +49,12 @@ fn test_validation() -> Result<()> {
             describe("ADT Validation", ()=>{
                 it("Validates a Null variant: ShapeCaseKey.Null", ()=>{
                     expect(() => {
-                        Shape.validate(ShapeCaseKey.Null)
+                        Shape.validate({_case: ShapeCaseKey.Null})
                     }).not.toThrow();
                 });
                 it("Validates a Null variant literal: 'Null'", ()=>{
                     expect(() => {
-                        Shape.validate("Null")
+                        Shape.validate({_case: "Null"})
                     }).not.toThrow();
                 });
                 it("Validates a Circle variant: {_case: ShapeCaseKey.Circle, data: { radius: 1.7} }", ()=>{

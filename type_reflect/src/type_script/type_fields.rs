@@ -5,6 +5,7 @@ use crate::type_script::to_ts_type;
 
 pub fn named_member(member: &NamedField, inflection: Inflection) -> String {
     let name = &member.name.inflect(inflection);
+
     match &member.type_ {
         type_reflect_core::Type::Option(t) => {
             let value = to_ts_type(&t);

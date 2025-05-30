@@ -52,10 +52,10 @@ mod tagged {
             describe("ADT Validation", ()=>{
                 it("Validates a Null variant: ShapeCaseKey.Null", ()=>{
                     expect(() => {
-                        Shape.validate(ShapeCaseKey.Null)
+                        Shape.validate({_case: ShapeCaseKey.Null})
                     }).not.toThrow();
                     expect(() => {
-                        Shape.validate("NULL")
+                        Shape.validate({_case: "NULL"})
                     }).not.toThrow();
                 });
                 it("Validates a Circle variant: {_case: ShapeCaseKey.Circle, data: { radius: 1.7} }", ()=>{

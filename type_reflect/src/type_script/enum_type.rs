@@ -149,7 +149,9 @@ trait EnumTypeBridge: EnumReflectionType {
             type_reflect_core::TypeFieldsDefinition::Unit => {
                 return format!(
                     r#"
-        export type {case_type_name} = "{id}";
+export type {case_type_name} = {{
+    {case_key}: "{id}",
+}};
                     "#
                 )
             }
