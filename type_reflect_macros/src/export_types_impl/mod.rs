@@ -30,7 +30,7 @@ impl Parse for ItemsList {
         let _colon_token: Token![:] = input.parse()?;
         let content;
         let _brackets: Bracket = bracketed!(content in input);
-        let idents = content.parse_terminated(Ident::parse)?;
+        let idents = content.parse_terminated(Ident::parse, Token![,])?;
         Ok(Self { idents })
     }
 }
@@ -54,7 +54,7 @@ impl Parse for DestinationList {
         let content;
         let _brackets: Bracket = bracketed!(content in input);
         let destinations: Punctuated<Destination, Token![,]> =
-            match content.parse_terminated(Destination::parse) {
+            match content.parse_terminated(Destination::parse, Token![,]) {
                 Ok(res) => res,
                 Err(err) => {
                     return Err(syn::Error::new(

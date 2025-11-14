@@ -12,5 +12,5 @@ documentation = "https://docs.rs/type_reflect_core"
 [dependencies]
 proc-macro2 = "1.0.103"
 quote = "1.0.42"
-syn = { version = "1", features = ["full", "extra-traits"] }
+syn = { version = "2", features = ["full", "extra-traits"] }
 Inflector = { version = "0.11.4", default-features = false }
