@@ -23,7 +23,7 @@ where
 
     let namespace = validation_namespace(T::name(), ts_string! {
         #case_validations
-        throw new Error(#"`Error validating #name: value ${JSON.stringify(input)} does not match any variant`");
+        throw new Error(# "`Error validating #name: value ${JSON.stringify(input)} does not match any variant`");
     }.as_str());
 
     ts_string! {

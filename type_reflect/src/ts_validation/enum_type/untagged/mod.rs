@@ -41,9 +41,9 @@ where
             .collect();
         let unit_case_validations = unit_case_validations.join("\n");
         ts_string! {
-            if (#"'string'" === typeof input) {
+            if (# "'string'" === typeof input) {
                 #unit_case_validations
-                throw new Error(#"`Error validating #name: none of the unit cases were matched`");
+                throw new Error(# "`Error validating #name: none of the unit cases were matched`");
             }
         }
     };
@@ -69,7 +69,7 @@ where
         let union_case_validations = union_case_validations.join("\n");
         ts_string! {
             if (!isRecord(input)) {
-                throw new Error(#r#"`Error parsing #name: expected: Record, found: ${typeof input}`"#);
+                throw new Error(# "`Error parsing #name: expected: Record, found: ${typeof input}`");
             }
             #union_case_validations
         }
@@ -87,12 +87,11 @@ where
         &ts_string! {
             #unit_case_validations
             #union_case_validations
-            throw new Error(#"`Error validating #name: none of the union cases were matched`");
+            throw new Error(# "`Error validating #name: none of the union cases were matched`");
         },
     );
 
     ts_string! {
-
         #union_case_types
         #namespace
     }

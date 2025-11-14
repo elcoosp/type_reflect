@@ -2,7 +2,7 @@
 name = "ts_quote_macros"
 version = "0.4.0"
 authors = ["Spencer Kohan <spencerkohan@gmail.com>"]
-edition = "2021"
+edition = "2024"
 description = "Proc macro implementations for ts_quote"
 license = "Apache-2.0"
 
@@ -15,6 +15,6 @@ proc-macro = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-proc-macro2 = "1.0.69"
+proc-macro2 = "1.0.103"
 quote = "1"
 syn = { version = "1", features = ["full", "extra-traits"] }

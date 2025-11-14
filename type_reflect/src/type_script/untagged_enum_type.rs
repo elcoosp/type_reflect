@@ -6,7 +6,7 @@ use type_reflect_core::{
 
 use super::{to_ts_type, type_fields, union_case_type_name};
 
-pub fn emit_untaggedd_enum_type<T>() -> String
+pub fn emit_untagged_enum_type<T>() -> String
 where
     T: EnumReflectionType,
 {
@@ -91,7 +91,7 @@ where
 
 fn emit_unit_case(case: &EnumCase, inflection: Inflection) -> String {
     let name = &case.name.inflect(inflection);
-    ts_string! { #"'#name'" }
+    ts_string! { # "'#name'" }
 }
 
 fn emit_member_case(case: &EnumCase, parent_name: &str, inflection: Inflection) -> String {
@@ -139,15 +139,15 @@ fn emit_case_type_contents(case: &EnumCase, parent_name: &str) -> String {
     match &case.type_ {
         TypeFieldsDefinition::Unit => unreachable!("unit cases don't have a a case type"),
         TypeFieldsDefinition::Tuple(items) => {
-            emit_tuple_case_type_contentns(&case, &items, parent_name)
+            emit_tuple_case_type_contents(&case, &items, parent_name)
         }
         TypeFieldsDefinition::Named(named_fields) => {
-            emit_struct_case_type_contentns(case, named_fields)
+            emit_struct_case_type_contents(case, named_fields)
         }
     }
 }
 
-fn emit_tuple_case_type_contentns(
+fn emit_tuple_case_type_contents(
     case: &EnumCase,
     tuple_fields: &Vec<Type>,
     parent_name: &str,
@@ -169,7 +169,7 @@ fn emit_tuple_case_type_contentns(
     }
 }
 
-fn emit_struct_case_type_contentns(case: &EnumCase, named_fields: &Vec<NamedField>) -> String {
+fn emit_struct_case_type_contents(case: &EnumCase, named_fields: &Vec<NamedField>) -> String {
     let struct_items = type_fields::named_fields(named_fields, case.inflection);
 
     ts_string! {

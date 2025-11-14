@@ -1,7 +1,7 @@
 use ts_quote::ts_string;
 use type_reflect_core::{EnumCase, EnumType, Inflectable, Inflection};
 
-use super::untagged_enum_type::emit_untaggedd_enum_type;
+use super::untagged_enum_type::emit_untagged_enum_type;
 use crate::type_script::type_fields;
 use crate::EnumReflectionType;
 
@@ -17,7 +17,7 @@ where
             case_key,
             content_key,
         } => emit_complex_enum_type::<T>(&case_key, &content_key),
-        EnumType::Untagged => emit_untaggedd_enum_type::<T>(),
+        EnumType::Untagged => emit_untagged_enum_type::<T>(),
     }
 }
 

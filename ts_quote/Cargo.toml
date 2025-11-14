@@ -2,7 +2,7 @@
 name = "ts_quote"
 version = "0.4.0"
 authors = ["Spencer Kohan <spencerkohan@gmail.com>"]
-edition = "2021"
+edition = "2024"
 description = "Procedural macros for quasi-quoting TypeScript from Rust"
 license = "Apache-2.0"
 
@@ -13,6 +13,6 @@ documentation = "https://docs.rs/ts_quote"
 
 [dependencies]
 ts_quote_macros = "0.4.0"
-deno_ast = "0.31.6"
-dprint-plugin-typescript = "0.88.3"
-anyhow = "1.0.75"
+deno_ast = "0.51.0"
+dprint-plugin-typescript = "0.95.12"
+anyhow = "1.0.100"

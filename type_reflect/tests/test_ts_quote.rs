@@ -19,9 +19,9 @@ fn test_ident_substitution() -> Result<()> {
 
     let ts: TS = ts_quote! {
         const val = #hola + #{foo + bar};
-        const lemon = #"`egg salad sandwich ${val}`";
-        const peas = #"`egg salad sandwich ${val} == #foo`";
-        const soup = #"`egg salad sandwich ${val} == #{foo - bar} something something`";
+        const lemon = # "`egg salad sandwich ${val}`";
+        const peas = # "`egg salad sandwich ${val} == #foo`";
+        const soup = # "`egg salad sandwich ${val} == #{foo - bar} something something`";
     }?;
 
     let prefix = ts.formatted(None)?;

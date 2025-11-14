@@ -1,30 +1,24 @@
-use crate::ts_validation::validation::type_validation;
 use ts_quote::ts_string;
-use type_reflect_core::Type;
 
-pub fn tuple_validation(var_name: &str, member_types: &Vec<Type>) -> String {
-    if member_types.len() == 1 {
-        return type_validation(var_name, &member_types[0]);
-    }
+use crate::ts_validation::validation::type_validation;
 
-    let member_validations: String = member_types
-        .into_iter()
+pub fn tuple_validation(var_name: &str, members: &Vec<type_reflect_core::Type>) -> String {
+    let member_validations: Vec<String> = members
+        .iter()
         .enumerate()
-        .map(|(i, member)| {
-            type_validation(
-                ts_string! {
-                    #var_name[#i]
-                }
-                .as_str(),
-                &member,
-            )
+        .map(|(i, member_type)| {
+            let member_var = format!("{}[{}]", var_name, i);
+            type_validation(&member_var, member_type)
         })
         .collect();
 
+    let member_validations = member_validations.join("\n");
+
     ts_string! {
         if (!Array.isArray(#var_name)) {
-            throw new Error(#"`Error parsing #var_name: expected: Array, found: ${ typeof #var_name }`");
+            throw new Error(# "`Error parsing #var_name: expected: Array, found: ${ typeof #var_name }`");
         }
         #member_validations
     }
+    .to_string()
 }

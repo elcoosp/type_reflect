@@ -1,7 +1,9 @@
-use deno_ast::{parse_module, Diagnostic, SourceTextInfo};
+use std::path::Path;
+
+use deno_ast::{parse_module, SourceTextInfo, ModuleSpecifier};
 use dprint_plugin_typescript::{
     configuration::{Configuration, ConfigurationBuilder, NextControlFlowPosition, QuoteStyle},
-    format_parsed_source,
+    format_text, FormatTextOptions,
 };
 pub use ts_quote_macros::ts_quote;
 pub use ts_quote_macros::ts_string;
@@ -21,9 +23,9 @@ pub trait TSSource: Sized {
 
     # Returns
 
-    Returns a ParsedSource, or an error diagnostic if source is not valid TypeScript
+    Returns a ParsedSource, or an error if source is not valid TypeScript
     **/
-    fn from_source(source: String) -> Result<Self, Diagnostic>;
+    fn from_source(source: String) -> anyhow::Result<Self>;
 
     /**
     Returns a formatted TypeScript string.
@@ -42,26 +44,39 @@ pub trait TSSource: Sized {
 
     # Returns
 
-    Returns a ParsedSource, or an error diagnostic if source is not valid TypeScript
+    Returns a formatted string, or an error if formatting fails
     **/
     fn formatted(&self, config: Option<&Configuration>) -> anyhow::Result<String>;
 }
 
 impl TSSource for TS {
-    fn from_source(source: String) -> Result<Self, Diagnostic> {
-        parse_module(deno_ast::ParseParams {
-            specifier: "".to_string(),
-            text_info: SourceTextInfo::from_string(source),
+    fn from_source(source: String) -> anyhow::Result<Self> {
+        let parsed = parse_module(deno_ast::ParseParams {
+            specifier: ModuleSpecifier::parse("file:///dummy.ts").unwrap(),
+            text: source.into(), // Convert String to Arc<str>
             media_type: deno_ast::MediaType::TypeScript,
             capture_tokens: true,
             scope_analysis: false,
             maybe_syntax: None,
-        })
+        })?;
+        Ok(parsed)
     }
 
     fn formatted(&self, config: Option<&Configuration>) -> anyhow::Result<String> {
+        let source_text = self.text_info_lazy().text_str().to_string();
+        let path = Path::new("file.ts");
+        
         match config {
-            Some(config) => Ok(format_parsed_source(self, config)?.unwrap_or(String::new())),
+            Some(config) => {
+                let options = FormatTextOptions {
+                    path,
+                    extension: Some("ts"),
+                    text: source_text,
+                    config,
+                    external_formatter: None,
+                };
+                Ok(format_text(options)?.unwrap_or(String::new()))
+            },
             None => {
                 let config = ConfigurationBuilder::new()
                     .indent_width(2)
@@ -72,12 +87,18 @@ impl TSSource for TS {
                     .next_control_flow_position(NextControlFlowPosition::SameLine)
                     .build();
 
-                Ok(format_parsed_source(self, &config)?.unwrap_or(String::new()))
+                let options = FormatTextOptions {
+                    path,
+                    extension: Some("ts"),
+                    text: source_text,
+                    config: &config,
+                    external_formatter: None,
+                };
+                Ok(format_text(options)?.unwrap_or(String::new()))
             }
         }
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

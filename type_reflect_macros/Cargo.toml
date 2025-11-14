@@ -2,7 +2,7 @@
 name = "type_reflect_macros"
 version = "0.5.1"
 authors = ["Spencer Kohan <spencerkohan@gmail.com>"]
-edition = "2021"
+edition = "2024"
 description = "derive macro for type_reflect"
 license = "MIT"
 
@@ -14,7 +14,7 @@ proc-macro = true
 
 [dependencies]
 type_reflect_core = "0.5.0"
-proc-macro2 = "1.0.69"
-quote = "1"
+proc-macro2 = "1.0.103"
+quote = "1.0.42"
 syn = { version = "1", features = ["full", "extra-traits"] }
 Inflector = { version = "0.11", default-features = false }
