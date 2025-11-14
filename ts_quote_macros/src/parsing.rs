@@ -76,7 +76,7 @@ impl ParseContext {
     }
 
     fn push_back_str(&mut self, s: &str) {
-        self.string_val.push_str(format!("{}", s).as_str());
+        self.string_val.push_str(s.to_string().as_str());
     }
 
     fn push_back_token(&mut self, token: TokenTree) {
@@ -152,11 +152,10 @@ impl ParseContext {
         let mut result: String = format!("{}", inital.as_char());
         let mut current = inital;
         while let Spacing::Joint = current.spacing() {
-            if let Some(TokenTree::Punct(punct)) = self.peek_next() {
-                if punct.as_char() == '#' {
+            if let Some(TokenTree::Punct(punct)) = self.peek_next()
+                && punct.as_char() == '#' {
                     break;
                 }
-            }
 
             let Some(TokenTree::Punct(punct)) = self.next() else {
                 panic!("Spacing::Joint should guarantee a Punct here");

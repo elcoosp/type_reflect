@@ -32,7 +32,7 @@ impl StructDef {
             tokens: quote! { #item },
             inflection: rename_attr.rename_all,
             ident: item.ident.clone(),
-            fields: (&item.fields).to_fields()?,
+            fields: item.fields.to_fields()?,
         })
     }
 
@@ -45,7 +45,7 @@ impl StructDef {
         //     #(#members),*
         // }
 
-        return (&self.fields).emit_def();
+        self.fields.emit_def()
     }
 
     pub fn emit(&self) -> TokenStream {

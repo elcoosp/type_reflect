@@ -54,7 +54,7 @@ where
 {
     let cases_union = T::generate_cases_union();
     let case_keys_const = T::generate_case_key_const();
-    let union_types = T::generate_union_types(&case_key, &content_key, T::inflection());
+    let union_types = T::generate_union_types(case_key, content_key, T::inflection());
     let union_type = T::generate_union_schema();
 
     // Generate case type
@@ -128,7 +128,7 @@ trait EnumTypeBridge: EnumReflectionType {
 
         for case in Self::cases() {
             result.push_str(
-                Self::generate_union_type(&case, &case_key, &content_key, inflection).as_str(),
+                Self::generate_union_type(&case, case_key, content_key, inflection).as_str(),
             )
         }
 
@@ -172,7 +172,7 @@ export type {case_type_name} = {{
                     )
                 } else {
                     let tuple_items: Vec<String> =
-                        inner.into_iter().map(|item| to_ts_type(&item)).collect();
+                        inner.iter().map(|item| to_ts_type(item)).collect();
                     let tuple_items: String = tuple_items.join(",\n        ");
 
                     format!(

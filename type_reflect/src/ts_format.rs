@@ -1,10 +1,7 @@
 use std::{ffi::OsStr, path::Path};
 
 use dprint_plugin_typescript::{
-    configuration::{
-        ConfigurationBuilder, NextControlFlowPosition, PreferHanging, QuoteStyle,
-        SameOrNextLinePosition,
-    },
+    configuration::ConfigurationBuilder,
     FormatTextOptions,
 };
 

@@ -47,7 +47,7 @@ fn extract_cases(item: &ItemEnum) -> Result<Vec<EnumCase>> {
             };
             Ok(EnumCase {
                 name,
-                type_: (&case.fields).to_fields()?,
+                type_: case.fields.to_fields()?,
                 inflection,
             })
         })
@@ -59,16 +59,13 @@ impl EnumDef {
         let attributes = EnumAttr::from_attrs(&item.attrs)?;
         let rename_attr = RenameAllAttr::from_attrs(&item.attrs)?;
 
-        let cases = extract_cases(&item)?;
+        let cases = extract_cases(item)?;
 
-        let enum_type = match (&cases).into_iter().fold(false, |input, case| {
-            input
-                || if let TypeFieldsDefinition::Unit = case.type_ {
+        let enum_type = match cases.iter().any(|case| if let TypeFieldsDefinition::Unit = case.type_ {
                     false
                 } else {
                     true
-                }
-        }) {
+                }) {
             // false indicates it is not complex
             false => EnumType::Simple,
             // true indicates the type is complex
@@ -94,8 +91,8 @@ impl EnumDef {
     }
 
     pub fn emit_cases(&self) -> TokenStream {
-        let cases: Vec<TokenStream> = (&self.cases)
-            .into_iter()
+        let cases: Vec<TokenStream> = self.cases
+            .iter()
             .map(|case| {
                 let name = &case.name;
                 let type_ = case.type_.emit_def();

@@ -12,7 +12,7 @@ pub fn named_field_validations(
     inflection: Inflection,
 ) -> String {
     let members: Vec<String> = members
-        .into_iter()
+        .iter()
         .map(|member| {
             let member_name = member.name.inflect(inflection);
             type_validation(

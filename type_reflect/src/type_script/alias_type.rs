@@ -6,7 +6,7 @@ pub fn emit_alias_type<T>() -> String
 where
     T: AliasType,
 {
-    return format!(
+    format!(
         r#"
 
 export type {alias} = {source};
@@ -14,5 +14,5 @@ export type {alias} = {source};
 "#,
         alias = T::name(),
         source = to_ts_type(&T::source_type())
-    );
+    )
 }

@@ -27,8 +27,8 @@ where
             }
         })
         .map(|case| {
-            let name = case.name.inflect(inflection);
-            name
+            
+            case.name.inflect(inflection)
         })
         .collect();
 
@@ -37,7 +37,7 @@ where
     } else {
         let unit_case_validations: Vec<_> = unit_cases
             .into_iter()
-            .map(|case_name| unit_case_validation(case_name.as_str(), &name))
+            .map(|case_name| unit_case_validation(case_name.as_str(), name))
             .collect();
         let unit_case_validations = unit_case_validations.join("\n");
         ts_string! {
@@ -64,7 +64,7 @@ where
     } else {
         let union_case_validations: Vec<_> = union_cases
             .iter()
-            .map(|case| union_case_validation(case, &name, inflection))
+            .map(|case| union_case_validation(case, name, inflection))
             .collect();
         let union_case_validations = union_case_validations.join("\n");
         ts_string! {
@@ -77,13 +77,13 @@ where
 
     let union_case_types: Vec<_> = union_cases
         .iter()
-        .map(|case| emit_case_type(case, &name))
+        .map(|case| emit_case_type(case, name))
         .collect();
 
     let union_case_types = union_case_types.join("\n");
 
     let namespace = validation_namespace(
-        &name,
+        name,
         &ts_string! {
             #unit_case_validations
             #union_case_validations

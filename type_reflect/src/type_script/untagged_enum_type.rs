@@ -38,7 +38,7 @@ where
 
     let unit_cases: Vec<String> = unit_cases
         .iter()
-        .map(|case| emit_unit_case(&case, inflection))
+        .map(|case| emit_unit_case(case, inflection))
         .collect();
 
     let unit_cases: Option<String> = if unit_cases.is_empty() {
@@ -49,7 +49,7 @@ where
 
     let member_cases: Vec<String> = non_union_cases
         .iter()
-        .map(|case| emit_member_case(&case, T::name(), inflection))
+        .map(|case| emit_member_case(case, T::name(), inflection))
         .collect();
 
     let member_cases_block = if member_cases.is_empty() {
@@ -65,7 +65,7 @@ where
 
     let member_case_types: Vec<String> = non_union_cases
         .iter()
-        .map(|case| emit_case_type(&case, T::name()))
+        .map(|case| emit_case_type(case, T::name()))
         .collect();
     let member_case_types = member_case_types.join("\n");
 
@@ -96,15 +96,15 @@ fn emit_unit_case(case: &EnumCase, inflection: Inflection) -> String {
 
 fn emit_member_case(case: &EnumCase, parent_name: &str, inflection: Inflection) -> String {
     let name = &case.name.inflect(inflection);
-    let member_type = emit_case_type_name(&case, parent_name);
+    let member_type = emit_case_type_name(case, parent_name);
     ts_string! { #name ? : #member_type }
 }
 
 pub fn emit_case_type_name(case: &EnumCase, parent_name: &str) -> String {
     match &case.type_ {
         TypeFieldsDefinition::Unit => unreachable!("unit cases don't have a a case type"),
-        TypeFieldsDefinition::Tuple(items) => emit_tuple_case_type_name(&case, &items, parent_name),
-        TypeFieldsDefinition::Named(named_fields) => union_case_type_name(case, parent_name),
+        TypeFieldsDefinition::Tuple(items) => emit_tuple_case_type_name(case, items, parent_name),
+        TypeFieldsDefinition::Named(_named_fields) => union_case_type_name(case, parent_name),
     }
 }
 
@@ -116,7 +116,7 @@ fn emit_tuple_case_type_name(
     if let Some(field) = tuple_fields.first()
         && tuple_fields.len() == 1
     {
-        to_ts_type(&field)
+        to_ts_type(field)
     } else {
         union_case_type_name(case, parent_name)
     }
@@ -139,7 +139,7 @@ fn emit_case_type_contents(case: &EnumCase, parent_name: &str) -> String {
     match &case.type_ {
         TypeFieldsDefinition::Unit => unreachable!("unit cases don't have a a case type"),
         TypeFieldsDefinition::Tuple(items) => {
-            emit_tuple_case_type_contents(&case, &items, parent_name)
+            emit_tuple_case_type_contents(case, items, parent_name)
         }
         TypeFieldsDefinition::Named(named_fields) => {
             emit_struct_case_type_contents(case, named_fields)
@@ -148,18 +148,18 @@ fn emit_case_type_contents(case: &EnumCase, parent_name: &str) -> String {
 }
 
 fn emit_tuple_case_type_contents(
-    case: &EnumCase,
+    _case: &EnumCase,
     tuple_fields: &Vec<Type>,
-    parent_name: &str,
+    _parent_name: &str,
 ) -> String {
     if let Some(field) = tuple_fields.first()
         && tuple_fields.len() == 1
     {
-        to_ts_type(&field)
+        to_ts_type(field)
     } else {
         let members: Vec<String> = tuple_fields
-            .into_iter()
-            .map(|field| to_ts_type(&field))
+            .iter()
+            .map(|field| to_ts_type(field))
             .collect();
         let members = members.join(", ");
 

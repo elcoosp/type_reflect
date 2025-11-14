@@ -29,7 +29,7 @@ impl TypeEmitter for TSValidation {
         T: StructType,
     {
         let name = T::name();
-        struct_impl(&name, &T::fields(), T::inflection())
+        struct_impl(name, &T::fields(), T::inflection())
     }
 
     fn emit_enum<T>(&mut self) -> String

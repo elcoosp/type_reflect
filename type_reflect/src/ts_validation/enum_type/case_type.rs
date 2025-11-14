@@ -17,10 +17,10 @@ pub fn emit_complex_enum_case_type(
     let validator = match &case.type_ {
         type_reflect_core::TypeFieldsDefinition::Unit => emit_simple_case_type_validator(),
         type_reflect_core::TypeFieldsDefinition::Tuple(members) => {
-            emit_tuple_case_type_validator(content_key, &members)
+            emit_tuple_case_type_validator(content_key, members)
         }
         type_reflect_core::TypeFieldsDefinition::Named(members) => {
-            emit_struct_case_type_validator(content_key, &members, case.inflection)
+            emit_struct_case_type_validator(content_key, members, case.inflection)
         }
     };
 
@@ -50,7 +50,7 @@ pub fn emit_complex_enum_case_type(
         }
     };
 
-    return validation_namespace(case_type_name.as_str(), validation_impl.as_str());
+    validation_namespace(case_type_name.as_str(), validation_impl.as_str())
 }
 
 fn emit_simple_case_type_validator() -> String {

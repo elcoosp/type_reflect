@@ -3,7 +3,6 @@
 #![feature(let_chains)]
 pub use core::convert::AsRef;
 use std::ffi::OsStr;
-use type_reflect_macros;
 
 use std::fs::File;
 pub use std::io::Write;
@@ -82,7 +81,7 @@ where
     Post: AsRef<[u8]>,
 {
     let mut file = std::fs::OpenOptions::new()
-        .write(true)
+        
         .append(true)
         .open(path)?;
     file.write_all(postfix.as_ref())?;

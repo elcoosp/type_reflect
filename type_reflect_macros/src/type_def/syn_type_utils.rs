@@ -73,7 +73,7 @@ pub trait SynTypeBridge {
                         key: generics[0].clone().into(),
                         value: generics[1].clone().into(),
                     }),
-                    _ if generics.len() == 0 => Ok(simple_type(leading)),
+                    _ if generics.is_empty() => Ok(simple_type(leading)),
                     _ => syn_err!("Unsupported type type: {:#?}", &self.syn_type()),
                 }
             }
@@ -136,7 +136,7 @@ pub trait FieldsNamedBridge {
     fn to_named_fields(&self) -> Result<Vec<NamedField>> {
         (&self.fields_named().named)
             .into_iter()
-            .map(|field: &Field| get_struct_member(&field))
+            .map(|field: &Field| get_struct_member(field))
             .collect()
     }
 }
@@ -152,7 +152,7 @@ pub trait FieldsUnmnamedBridge {
     fn to_tuple_members(&self) -> Result<Vec<Type>> {
         (&self.fields_unnamed().unnamed)
             .into_iter()
-            .map(|field: &Field| get_field_type(&field))
+            .map(|field: &Field| get_field_type(field))
             .collect()
     }
 }

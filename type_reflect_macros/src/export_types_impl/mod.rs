@@ -64,7 +64,7 @@ impl Parse for DestinationList {
                 }
             };
 
-        let destinations: Vec<Destination> = destinations.into_iter().map(|dest| dest).collect();
+        let destinations: Vec<Destination> = destinations.into_iter().collect();
 
         Ok(Self { destinations })
     }

@@ -19,7 +19,7 @@ impl Parse for Destination {
             return Ok(Destination::Unnamed(dest));
         }
         let dest = input.parse()?;
-        return Ok(Destination::Named(dest));
+        Ok(Destination::Named(dest))
     }
 }
 
@@ -257,12 +257,9 @@ pub fn emit_named_destination(dest: &NamedDestination, types: &Vec<&Ident>) -> T
         result.extend(quote! {
             emitter.finalize(#dest)?;
         });
-        match postfix {
-            Some(expr) => result.extend(quote! {
-                type_reflect::write_postfix(#dest, #expr)?;
-            }),
-            None => {}
-        };
+        if let Some(expr) = postfix { result.extend(quote! {
+            type_reflect::write_postfix(#dest, #expr)?;
+        }) };
     }
     result
 }
@@ -319,12 +316,9 @@ pub fn emit_unnamed_destination(dest: &UnnamedDestination, types: &Vec<&Ident>) 
             });
             result.extend(emit_single_emitter(emitter, types, dest));
         }
-        match postfix {
-            Some(expr) => result.extend(quote! {
-                type_reflect::write_postfix(#dest, #expr)?;
-            }),
-            None => {}
-        };
+        if let Some(expr) = postfix { result.extend(quote! {
+            type_reflect::write_postfix(#dest, #expr)?;
+        }) };
     }
     result
 }

@@ -16,6 +16,7 @@ impl Inflectable for String {
 }
 
 #[derive(Copy, Clone, Debug)]
+#[derive(Default)]
 pub enum Inflection {
     Lower,
     Upper,
@@ -24,14 +25,10 @@ pub enum Inflection {
     Pascal,
     ScreamingSnake,
     Kebab,
+    #[default]
     None,
 }
 
-impl Default for Inflection {
-    fn default() -> Self {
-        Self::None
-    }
-}
 
 impl Inflection {
     pub fn apply(self, string: &str) -> String {

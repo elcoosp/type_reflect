@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use deno_ast::{parse_module, SourceTextInfo, ModuleSpecifier};
+use deno_ast::{parse_module, ModuleSpecifier};
 use dprint_plugin_typescript::{
     configuration::{Configuration, ConfigurationBuilder, NextControlFlowPosition, QuoteStyle},
     format_text, FormatTextOptions,

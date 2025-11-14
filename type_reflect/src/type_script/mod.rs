@@ -6,10 +6,7 @@ use super::*;
 
 pub mod struct_type;
 use dprint_plugin_typescript::{
-    configuration::{
-        ConfigurationBuilder, NextControlFlowPosition, PreferHanging, QuoteStyle,
-        SameOrNextLinePosition,
-    },
+    configuration::ConfigurationBuilder,
     FormatTextOptions,
 };
 use struct_type::*;
@@ -41,13 +38,13 @@ pub trait TypeExporter {
 pub fn to_ts_type(t: &Type) -> String {
     match t {
         // TODO: Support generics
-        Type::Named(t) => format!("{}", t.name),
+        Type::Named(t) => t.name.to_string(),
         Type::String => "string".to_string(),
         Type::Int => "number".to_string(),
         Type::UnsignedInt => "number".to_string(),
         Type::Float => "number".to_string(),
         Type::Boolean => "boolean".to_string(),
-        Type::Option(t) => format!("{}", to_ts_type(t)),
+        Type::Option(t) => to_ts_type(t).to_string(),
         Type::Array(t) => format!("Array<{}>", to_ts_type(t)),
         Type::Map { key, value } => {
             format!(
@@ -56,7 +53,7 @@ pub fn to_ts_type(t: &Type) -> String {
                 v = to_ts_type(value)
             )
         }
-        Type::Transparent(t) => to_ts_type(&*(t.type_)),
+        Type::Transparent(t) => to_ts_type(&(t.type_)),
     }
 }
 
@@ -70,7 +67,7 @@ impl TypeEmitter for TypeScript {
         T: StructType,
     {
         let name = T::name();
-        struct_impl(&name, &T::fields(), T::inflection())
+        struct_impl(name, &T::fields(), T::inflection())
     }
 
     fn emit_enum<T>(&mut self) -> String

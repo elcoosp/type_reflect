@@ -1,5 +1,5 @@
 use ts_quote::ts_string;
-use type_reflect_core::{inflection, EnumCase, Inflectable, Inflection, Type};
+use type_reflect_core::{EnumCase, Inflectable, Inflection, Type};
 
 use crate::{
     ts_validation::validation::type_validation,
@@ -8,14 +8,14 @@ use crate::{
 
 pub fn union_case_validation(case: &EnumCase, parent_name: &str, inflection: Inflection) -> String {
     let case_key = case.name.inflect(inflection);
-    let case_type_name = emit_case_type_name(case, parent_name);
+    let _case_type_name = emit_case_type_name(case, parent_name);
 
     let case_validation = match &case.type_ {
         type_reflect_core::TypeFieldsDefinition::Unit => {
             unreachable!("Unit cases are handled separately");
         }
         type_reflect_core::TypeFieldsDefinition::Tuple(items) => {
-            validate_tuple_case(case, &items, parent_name, &case_key)
+            validate_tuple_case(case, items, parent_name, &case_key)
         }
         type_reflect_core::TypeFieldsDefinition::Named(_) => {
             validate_struct_case(case, parent_name, &case_key)

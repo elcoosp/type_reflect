@@ -65,7 +65,7 @@ where
     T: EnumReflectionType,
 {
     let cases_enum = T::generate_cases_enum();
-    let union_types = T::generate_union_types(&case_key, &content_key, T::inflection());
+    let union_types = T::generate_union_types(case_key, content_key, T::inflection());
     let union_type = T::generate_union_schema();
 
     // Generate case type
@@ -119,7 +119,7 @@ export enum {name} {{
 
         for case in Self::cases() {
             result.push_str(
-                Self::generate_union_type(&case, &case_key, &content_key, inflection).as_str(),
+                Self::generate_union_type(&case, case_key, content_key, inflection).as_str(),
             )
         }
 
@@ -154,8 +154,8 @@ export enum {name} {{
                     )
                 } else {
                     let tuple_items: String = inner
-                        .into_iter()
-                        .map(|item| format!("        {},\n", to_zod_type(&item)))
+                        .iter()
+                        .map(|item| format!("        {},\n", to_zod_type(item)))
                         .collect();
 
                     format!(
@@ -168,7 +168,7 @@ export enum {name} {{
             }
             type_reflect_core::TypeFieldsDefinition::Named(inner) => {
                 let struct_items: String = inner
-                    .into_iter()
+                    .iter()
                     .map(|item| {
                         format!(
                             "    {}: {},\n",
